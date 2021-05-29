@@ -1,0 +1,5 @@
+{
+	"settings": {
+		"python.analysis.extraPaths": ["Z:\\cygwin64\\home\\YasuoKatou\\workspace\\openpyxl\\openpyxl"]
+	}
+}
