@@ -7,10 +7,13 @@ from PDFPreview import makePDFwithExcel
 if __name__ == '__main__':
     excelFile = 'V01-frame_100_LibreOffice.xlsx'
     excelPath = pathlib.Path(__file__).parent / 'samples' / excelFile
+    jsonPath  = str(excelPath.parent / excelPath.stem) + '.json'
     mkInfo = {
+        'JsonPath' : str(jsonPath),
         'ExcelPath': str(excelPath),
         'SheetName': 'sample001',
         'PDFPath'  : '',
+        'JsonOut'  : False,
         '_debug'   : False,
         'args'     : {
             'page_margins': {

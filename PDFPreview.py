@@ -245,7 +245,14 @@ def makePDFwithExcel(mkInfo):
     _args = mkInfo['args']
     _debug = True if mkInfo['_debug'] else False
 
-    wbJson = Excel2Json.readExcel(mkInfo['ExcelPath'])
+    if mkInfo['JsonPath']:
+        wbJson = Excel2Json.jsonRead(mkInfo['JsonPath'])
+    else:
+        wbJson = Excel2Json.readExcel(mkInfo['ExcelPath'])
+        if mkInfo['JsonOut']:
+            p = pathlib.Path(mkInfo['ExcelPath'])
+            jsonPath = str(p.parent / p.stem) + '.json'
+            Excel2Json.jsonOut(wbJson, jsonPath)
     if _debug:
         print(wbJson)
 

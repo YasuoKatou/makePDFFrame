@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from enum import Enum
 import pathlib
 
@@ -301,11 +303,36 @@ def readExcel(excelPath):
         wbJson[ws.title] = wsJson
     return wbJson
 
+def jsonOut(dictVals, jsonPath):
+    #print(dictVals)
+    #j = json.dumps(dictVals, default=str, indent=2)
+    #print(j)
+    with open(jsonPath, mode='wt', encoding='utf-8') as f:
+        json.dump(dictVals, f, ensure_ascii=False, indent=2, default=str)
+
+def _on_pairs(itr):
+    #print(itr)
+    d = {}
+    for k, v in itr:
+        if isinstance(v, str):
+            if v.startswith('_BOARDER_TYPE.'):
+                x = v.split('.', 2)
+                v = getattr(_BOARDER_TYPE, x[1])
+        d[k] = v
+    return d
+
+def jsonRead(jsonPath):
+    with open(jsonPath, mode='r', encoding='utf-8') as f:
+        return json.load(f, object_pairs_hook=_on_pairs)
+
 if __name__ == '__main__':
     excelFile = 'V01-frame_001_LibreOffice.xlsx'
     excelPath = pathlib.Path(__file__).parent / 'FrameExcel' / excelFile
     print(excelPath)
     wbJson = readExcel(excelPath)
-    print(wbJson)
+    jsonPath = '.\\mydata.json'
+    jsonOut(wbJson, jsonPath)
+    r = jsonRead(jsonPath)
+    print(r)
 
 #[EOF]
