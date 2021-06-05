@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import pathlib
 
 from PDFPreview import makePDFwithExcel
@@ -55,6 +56,8 @@ if __name__ == '__main__':
             'folio1_no'    : '１１１１１',
         }
     }
+    if os.name == 'posix':
+        mkInfo['PDFPath'] = '/data/data/com.termux/files/home/storage/downloads/sample100.pdf'
     makePDFwithExcel(mkInfo)
 
 #[EOF]
