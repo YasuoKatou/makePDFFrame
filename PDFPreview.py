@@ -50,8 +50,8 @@ def _sizeInit(wsJson):
     else:
         leftMargin = 0.0
         msgFmt = '<page margin left: %finch(%fmm)>'
-    #print(msgFmt % (leftMargin, leftMargin * INCH2MM))
-    print(msgFmt % (leftMargin, ))
+    #_logger.debug(msgFmt % (leftMargin, leftMargin * INCH2MM))
+    _logger.debug(msgFmt % (leftMargin, ))
     # 上余白
     if pm['top'] != None:
         topMargin = pm['top']
@@ -60,8 +60,8 @@ def _sizeInit(wsJson):
     else:
         topMargin = 0.0
         msgFmt = '<page margin top : %finch(%fmm)>'
-    #print(msgFmt % (topMargin, topMargin * INCH2MM))
-    print(msgFmt % (topMargin, ))
+    #_logger.debug(msgFmt % (topMargin, topMargin * INCH2MM))
+    _logger.debug(msgFmt % (topMargin, ))
     # 列幅の一覧（印刷領域）
     defaultSize = openpyxl.worksheet.dimensions.SheetFormatProperties()
     left = leftMargin
@@ -92,21 +92,21 @@ def _newPdf(pdfPath):
     printPageSetup = _WSJson['PrintPageSetup']
     # 用紙サイズ
     paperSize = printPageSetup['paperSize']
-    print('[paperSize] : %s' % paperSize)
+    _logger.debug('[paperSize] : %s' % paperSize)
     if not paperSize:
         paperSize = _tempWS.PAPERSIZE_A4
     if printPageSetup['paperSize'] != paperSize:
-        print('<paperSize> : %s' % paperSize)
+        _logger.debug('<paperSize> : %s' % paperSize)
     # 用紙サイズは、A4のみ対応する
     assert str(paperSize) == _tempWS.PAPERSIZE_A4, 'page size not suportted.'
     paperSize = reportlab.lib.pagesizes.A4
     # 用紙の方向
     orientation = printPageSetup['orientation']
-    print('[orientation] : %s' % orientation)
+    _logger.debug('[orientation] : %s' % orientation)
     if orientation != _tempWS.ORIENTATION_LANDSCAPE:    # 横置き以外
         orientation = _tempWS.ORIENTATION_PORTRAIT
     if printPageSetup['orientation'] != orientation:
-        print('<orientation> : %s' % orientation)
+        _logger.debug('<orientation> : %s' % orientation)
     # PDFオブジェクトを生成
     if orientation == _tempWS.ORIENTATION_LANDSCAPE:
         pagesize = PLPageSize.landscape(paperSize)
@@ -119,7 +119,7 @@ def _newPdf(pdfPath):
 
 def _getCellRect(a1, isStr=True):
     printArea = openpyxl.utils.range_boundaries(_WSJson['print_area'])
-    #print(printArea)
+    #_logger.debug(printArea)
     cellAddress = openpyxl.utils.range_boundaries(a1)
     #if isStr:
     #    # 文字列は、１行下に座標を下げる
@@ -129,7 +129,7 @@ def _getCellRect(a1, isStr=True):
     #        cellAddress[2],
     #        cellAddress[3] + 1,
     #    )
-    #print(cellAddress)
+    #_logger.debug(cellAddress)
     return {
         'left'  : _leftPos[cellAddress[0] - printArea[0]],
         #'top'   : _topPos[cellAddress[1]  - printArea[1]]     / DPI,
@@ -149,11 +149,11 @@ def _drawString2(pdf_canvas, cell, valiableData=None):
             if n in valiableData:
                 return valiableData[n]
         return s
-    print('[A1: %s, String: %s, Font:(%s, %d), %s, %s]' %
+    _logger.debug('[A1: %s, String: %s, Font:(%s, %d), %s, %s]' %
         (cell['A1'], cell['value'], cell['font']['name'], cell['font']['size']
         , cell['alignment']['horizontal'], cell['alignment']['vertical']))
     cellString = __getString(cell['value'])
-    print(cellString)
+    _logger.debug(cellString)
     # フォント
     styles = [('FONT', (0, 0), (-1, -1), cell['font']['name'], cell['font']['size'])]
     if _debug:
@@ -185,10 +185,10 @@ def _drawString2(pdf_canvas, cell, valiableData=None):
     t.drawOn(pdf_canvas, x, y)
 
 def _drawString(pdf_canvas, cell):
-    print('[A1: %s, String: %s, Font:(%s, %d)]' %
+    _logger.debug('[A1: %s, String: %s, Font:(%s, %d)]' %
         (cell['A1'], cell['value'], cell['font']['name'], cell['font']['size'], ))
     cellRect = _getCellRect(cell['A1'])
-    print(cellRect)
+    _logger.debug(cellRect)
     pdf_canvas.setFont(cell['font']['name'], cell['font']['size'])
     #pdf_canvas.drawString(cellRect['left'] * inch, cellRect['top'] * inch, 'String')
     if cell['alignment']['horizontal'] == 'center':
@@ -208,7 +208,7 @@ def _drawString(pdf_canvas, cell):
 def _drawBoarders(c, boarders):
     for boarder in boarders:
         r = _getCellRect(boarder['A1'], isStr=False)
-        print('[%s] - %s' % (boarder['A1'], str(r)))
+        _logger.debug('[%s] - %s' % (boarder['A1'], str(r)))
         if boarder['kind'] == Excel2Json._BOARDER_TYPE.BOX_LEFT_TOP:
             h = (r['bottom'] - r['top'])
             y = 297.0 - h - r['top']
@@ -254,7 +254,7 @@ def makePDFwithExcel(mkInfo):
             jsonPath = str(p.parent / p.stem) + '.json'
             Excel2Json.jsonOut(wbJson, jsonPath)
     if _debug:
-        print(wbJson)
+        _logger.debug(wbJson)
 
     pdfPath = mkInfo['PDFPath']
     if not pdfPath:
@@ -279,6 +279,9 @@ def makePDFwithExcel(mkInfo):
     pdf_canvas.save() # 保存
 
 if __name__ == '__main__':
+    import MyConfig
+    _logger = MyConfig.getLogger(__name__)
+
     excelFile = 'V01-frame_100_LibreOffice.xlsx'
     excelPath = pathlib.Path(__file__).parent / 'samples' / excelFile
     mkInfo = {
@@ -301,5 +304,8 @@ if __name__ == '__main__':
         'data'     : None
     }
     makePDFwithExcel(mkInfo)
+else:
+    import MyConfig
+    _logger = MyConfig.getLogger(__name__)
 
 #[EOF]

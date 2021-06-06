@@ -284,12 +284,8 @@ def _getCellHeightWidth(ws, r):
 
     return {'width': width_map, 'height': height_map}
 
-#        if cellWidth == 0:
-#            cellWidth += 
-#            width_list.append[cellWidth]
-#        print(row)
-
 def readExcel(excelPath):
+    _logger.info('Excel Path : %s' % excelPath)
     wbJson = {}
     for ws in openpyxl.load_workbook(excelPath):
         wsJson = {}
@@ -304,14 +300,11 @@ def readExcel(excelPath):
     return wbJson
 
 def jsonOut(dictVals, jsonPath):
-    #print(dictVals)
-    #j = json.dumps(dictVals, default=str, indent=2)
-    #print(j)
+    _logger.info('JSON output Path : %s' % jsonPath)
     with open(jsonPath, mode='wt', encoding='utf-8') as f:
         json.dump(dictVals, f, ensure_ascii=False, indent=2, default=str)
 
 def _on_pairs(itr):
-    #print(itr)
     d = {}
     for k, v in itr:
         if isinstance(v, str):
@@ -322,17 +315,23 @@ def _on_pairs(itr):
     return d
 
 def jsonRead(jsonPath):
+    _logger.info('JSON Path : %s' % jsonPath)
     with open(jsonPath, mode='r', encoding='utf-8') as f:
         return json.load(f, object_pairs_hook=_on_pairs)
 
 if __name__ == '__main__':
+    import MyConfig
+    _logger = MyConfig.getLogger(__name__)
+
     excelFile = 'V01-frame_100_LibreOffice.xlsx'
     excelPath = pathlib.Path(__file__).parent / 'samples' / excelFile
-    print(excelPath)
     wbJson = readExcel(excelPath)
     jsonPath = '.\\mydata.json'
     jsonOut(wbJson, jsonPath)
     r = jsonRead(jsonPath)
-    print(r)
+    _logger.debug(r)
+else:
+    import MyConfig
+    _logger = MyConfig.getLogger(__name__)
 
 #[EOF]
