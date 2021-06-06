@@ -326,8 +326,8 @@ def jsonRead(jsonPath):
         return json.load(f, object_pairs_hook=_on_pairs)
 
 if __name__ == '__main__':
-    excelFile = 'V01-frame_001_LibreOffice.xlsx'
-    excelPath = pathlib.Path(__file__).parent / 'FrameExcel' / excelFile
+    excelFile = 'V01-frame_100_LibreOffice.xlsx'
+    excelPath = pathlib.Path(__file__).parent / 'samples' / excelFile
     print(excelPath)
     wbJson = readExcel(excelPath)
     jsonPath = '.\\mydata.json'

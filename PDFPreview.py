@@ -279,12 +279,14 @@ def makePDFwithExcel(mkInfo):
     pdf_canvas.save() # 保存
 
 if __name__ == '__main__':
-    excelFile = 'V01-frame_001_LibreOffice.xlsx'
-    excelPath = pathlib.Path(__file__).parent / 'FrameExcel' / excelFile
+    excelFile = 'V01-frame_100_LibreOffice.xlsx'
+    excelPath = pathlib.Path(__file__).parent / 'samples' / excelFile
     mkInfo = {
+        'JsonPath' : None,
         'ExcelPath': str(excelPath),
-        'SheetName': 'Sheet3',
+        'SheetName': 'sample001',
         'PDFPath'  : '',
+        'JsonOut'  : False,
         '_debug'   : False,
         'args'     : {
             'page_margins': {
