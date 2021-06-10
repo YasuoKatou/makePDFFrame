@@ -166,7 +166,7 @@ def _drawString2(pdf_canvas, cell, valiableData=None):
     else:
         styles.append(('ALIGN', (0, 0), (-1, -1), 'LEFT'))
     # 縦方向の位置
-    if cell['alignment']['vertical'] == 'right':
+    if cell['alignment']['vertical'] == 'top':
         styles.append(('VALIGN', (0, 0), (-1, -1), 'TOP'))
     elif cell['alignment']['vertical'] == 'center':
         styles.append(('VALIGN', (0, 0), (-1, -1), 'MIDDLE'))
