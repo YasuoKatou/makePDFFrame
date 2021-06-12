@@ -21,7 +21,9 @@ _tempWB = openpyxl.Workbook()
 _tempWS = _tempWB.active
 _WSJson = None
 
+_wp = pathlib.Path(__name__)
 for n, p in Const._FontList.items():
+    p = str(_wp.parent / p)
     RPPdfmetrics.registerFont(RPTTFonts.TTFont(n, p))
 
 #インチは25.4mm （ミリメートル）
